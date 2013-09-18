@@ -4,6 +4,6 @@ CREATE TABLE IF NOT EXISTS entry (
     nickname VARCHAR(255) NOT NULL,
     body TEXT,
     extra VARCHAR(255),
-    created_at DATETIME NOT NULL
-) ENGINE=InnoDB DERAULT CARSET=utf8;
-CREATE INDEX IF NOT EXISTS index_created_at ON entry ( created_at )
+    created_at DATETIME NOT NULL,
+    INDEX index_created_at(created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
