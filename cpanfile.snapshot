@@ -253,6 +253,38 @@ DISTRIBUTIONS
       Module::Build 0.38
       Module::Load 0
       perl 5.008001
+  DBIx-Skinny-0.0742
+    pathname: N/NE/NEKOKAK/DBIx-Skinny-0.0742.tar.gz
+    provides:
+      DBIx::Skinny 0.0742
+      DBIx::Skinny::DBD undef
+      DBIx::Skinny::DBD::Base undef
+      DBIx::Skinny::DBD::Oracle undef
+      DBIx::Skinny::DBD::Pg undef
+      DBIx::Skinny::DBD::SQLite undef
+      DBIx::Skinny::DBD::mysql undef
+      DBIx::Skinny::Iterator undef
+      DBIx::Skinny::Mixin undef
+      DBIx::Skinny::Profiler undef
+      DBIx::Skinny::Profiler::Trace undef
+      DBIx::Skinny::Row undef
+      DBIx::Skinny::SQL undef
+      DBIx::Skinny::SQL::Oracle undef
+      DBIx::Skinny::Schema undef
+      DBIx::Skinny::Util undef
+    requirements:
+      Carp 0
+      Class::Accessor::Lite 0
+      Class::Load 0
+      DBI 0
+      DBIx::TransactionManager 1.07
+      ExtUtils::MakeMaker 6.42
+      IO::Handle 0
+      Scalar::Util 0
+      Test::More 0.96
+      Test::SharedFork 0.15
+      Try::Tiny 0
+      UNIVERSAL::require 0
   DBIx-Sunny-0.21
     pathname: K/KA/KAZEBURO/DBIx-Sunny-0.21.tar.gz
     provides:
@@ -1187,6 +1219,14 @@ DISTRIBUTIONS
       constant 0
       strict 0
       warnings 0
+  UNIVERSAL-require-0.14
+    pathname: N/NE/NEILB/UNIVERSAL-require-0.14.tar.gz
+    provides:
+      UNIVERSAL 0.14
+      UNIVERSAL::require 0.14
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test::More 0.47
   URI-1.60
     pathname: G/GA/GAAS/URI-1.60.tar.gz
     provides:
