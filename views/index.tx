@@ -7,7 +7,7 @@
 : if $messages {
 <p>System Error! <em>try again</em>.</p>
 : for $messages.keys() -> $key {
-<p><em><: $key :>: <: $messages[$key] :></em></p>
+<p><em><: $messages[$key] :></em></p>
 : }
 : }
 
