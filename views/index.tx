@@ -4,9 +4,12 @@
 <h1>Stored Texts for you</h1>
 <h2>input your idea</h2>
 <form id="create-form" method="post" action="<: $c.req.uri_for('/create') :>">
-<div class="alert-message error hide">
+: if $messages {
 <p>System Error! <em>try again</em>.</p>
-</div>
+: for $messages.keys() -> $key {
+<p><em><: $key :>: <: $messages[$key] :></em></p>
+: }
+: }
 
 <fieldset>
 <div class="clearfix">
