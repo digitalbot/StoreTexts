@@ -4,31 +4,42 @@ use strict;
 use warnings;
 use utf8;
 use Kossy;
-use DBIx::Sunny;
+use DBI;
+use Teng::Schema::Loader;
+use Teng;
 use Digest::SHA;
+use Time::Piece;
+use Encode;
 
-sub dbh {
+sub db {
     my $self = shift;
-    my $db = $self->root_dir .'/store_texts.db';
-    $self->{_dbh} ||= DBIx::Sunny->connect("dbi:SQLite:dbname=$db", '', '', {
-        Callbacks => {
-            connected => sub {
-                my $conn = shift;
-                $conn->do(<<EOF);
-CREATE TABLE IF NOT EXISTS entry (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    object_id VARCHAR(255) NOT NULL UNIQUE,
-    nickname VARCHAR(255) NOT NULL,
-    body TEXT,
-    extra VARCHAR(255),
-    created_at DATETIME NOT NULL
-);
-EOF
-                $conn->do(q{CREATE INDEX IF NOT EXISTS index_created_at ON entry ( created_at )});
-                return;
-            },
-        },
-    });
+    if (! defined $self->{_db}) {
+        my @conf = (
+            "dbi:mysql:database=store_texts",
+            "root",
+            "",
+            {mysql_enable_utf8 => 1},
+        );
+        my $dbh = DBI->connect(@conf)
+            or die "missing connection.";
+        $self->{_db} = Teng::Schema::Loader->load(
+            namespace => "StoreTexts::DB",
+            dbh       => $dbh,
+        );
+    }
+    return $self->{_db};
+}
+
+sub _decode {
+    my ($self, $str, $code) = @_;
+    $code //= "utf-8";
+    return Encode::decode($code, $str);
+}
+
+sub _encode {
+    my ($self, $str, $code) = @_;
+    $code //= "utf-8";
+    return Encode::encode($code, $str);
 }
 
 sub add_entry {
@@ -36,43 +47,21 @@ sub add_entry {
     my ($body, $nickname) = @_;
     $body //= '';
     $nickname //= 'anonymous';
-    my $object_id = substr(Digest::SHA::sha1_hex($$ . join("\0", @_) . rand(1000) ), 0, 16);
-    $self->dbh->query(
-        q{INSERT INTO entry (object_id, nickname, body, created_at) VALUES ( ?, ?, ?, DATETIME('now') )},
-        $object_id, $nickname, $body
-    );
+    my $object_id = substr(Digest::SHA::sha1_hex($$ . $self->_encode($body) . $self->_encode($nickname) . rand(1000) ), 0, 16);
+    $self->db->insert("entry" => {
+        object_id  => $object_id,
+        nickname   => $nickname,
+        body       => $body,
+        created_at => localtime->datetime(T => ' '),
+    });
     return $object_id;
-}
-
-sub entry_list {
-    my $self = shift;
-    my $offset = shift;
-    $offset //= 0;
-    my $rows = $self->dbh->select_all(
-        q{SELECT * FROM entry ORDER BY created_at DESC LIMIT ?,11},
-        $offset
-    );
-    my $next;
-    $next = pop @$rows if @$rows > 10;
-    return $rows, $next;
 }
 
 get '/' =>  sub {
     my ($self, $c)  = @_;
-    my $result = $c->req->validator([
-        'offset' => {
-            default => 0,
-            rule => [
-                ['UINT','ivalid offset value'],
-            ],
-        },
-    ]);
-    $c->halt(403) if $result->has_error;
-    my ($entries, $has_next) = $self->entry_list($result->valid('offset'));
+    my @entries = $self->db->search("entry", {}, {order_by => "created_at DESC"});
     $c->render('index.tx', {
-        offset => $result->valid('offset'),
-        entries => $entries,
-        has_next => $has_next,
+        entries => \@entries,
     });
 };
 
