@@ -4,7 +4,7 @@
 <h1>Stored Texts for you</h1>
 <h2>input your idea</h2>
 <form method="post" action="<: $c.req.uri_for('/create') :>">
-: if $messages {
+: if $error {
 <p>System Error! <em>try again</em>.</p>
 : for $messages.keys() -> $key {
 <p><em><: $messages[$key] :></em></p>
