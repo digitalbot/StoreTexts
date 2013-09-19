@@ -11,6 +11,8 @@ use Digest::SHA;
 use Time::Piece;
 use Encode;
 
+my $LIMIT = 10;
+
 sub db {
     my $self = shift;
     if (! defined $self->{_db}) {
@@ -26,6 +28,7 @@ sub db {
             namespace => 'StoreTexts::DB',
             dbh       => $dbh,
         );
+        $self->{_db}->load_plugin('Pager');
     }
     return $self->{_db};
 }
@@ -63,8 +66,13 @@ sub add_entry {
 
 get '/' =>  sub {
     my ($self, $c)  = @_;
-    my @entries = $self->db->search('entry', {}, { order_by => 'created_at DESC' });
-    $c->render('index.tx', { entries => \@entries });
+    my $page = $c->req->param('page') || 1;
+    my ($entries, $pager) = $self->db->search_with_pager('entry', {}, {
+        page     => $page,
+        rows     => $LIMIT,
+        order_by => 'created_at DESC',
+    });
+    $c->render('index.tx', { entries => $entries, pager => $pager });
 };
 
 post '/create' => sub {

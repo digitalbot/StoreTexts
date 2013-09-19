@@ -40,4 +40,23 @@
 <p><: $entry.created_at :> by <: $entry.nickname :></p>
 : }
 
+: if $pager {
+<div class="pagination">
+<ul>
+: if $pager.previous_page {
+<li class="prev"><a href="<: $c.req.uri_for('/', [ page => $pager.previous_page ]) :>" rel="previous">&larr; Back</a></li>
+: }
+: else {
+<li class="prev disabled"><a href="#">&larr; Back</a></li>
+: }
+: if $pager.next_page {
+<li class="next"><a href="<: $c.req.uri_for('/', [ page => $pager.next_page ]) :>" rel="next">Next &rarr;</a></li>
+: }
+: else {
+<li class="next disabled"><a href="#">Next &rarr;</a></li>
+: }
+</ul>
+</div>
+: }
+
 : }
