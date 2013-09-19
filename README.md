@@ -7,6 +7,7 @@
 ##How to use
 
     $ git clone THIS
+    $ cd THIS
     $ carton install
     $ carton exec plackup
 
