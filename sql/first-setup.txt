@@ -1,5 +1,5 @@
 #!/bin/sh
 
 #After installation of mysql
-mysqladmin -u create store_texts
+mysqladmin -uroot create store_texts
 mysql -uroot store_texts < sql/entry.sql
