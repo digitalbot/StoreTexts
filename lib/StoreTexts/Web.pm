@@ -47,7 +47,11 @@ sub add_entry {
     my ($body, $nickname) = @_;
     $body //= '';
     $nickname //= 'anonymous';
-    my $object_id = substr(Digest::SHA::sha1_hex($$ . $self->_encode($body) . $self->_encode($nickname) . rand(1000) ), 0, 16);
+    my $object_id = substr(
+        Digest::SHA::sha1_hex($$ . $self->_encode($body) . $self->_encode($nickname) . rand(1000)),
+        0,
+        16,
+    );
     $self->db->insert("entry" => {
         object_id  => $object_id,
         nickname   => $nickname,

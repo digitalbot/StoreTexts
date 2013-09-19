@@ -3,7 +3,7 @@
 <div class="container">
 <h1>Stored Texts for you</h1>
 <h2>input your idea</h2>
-<form id="create-form" method="post" action="<: $c.req.uri_for('/create') :>">
+<form method="post" action="<: $c.req.uri_for('/create') :>">
 : if $messages {
 <p>System Error! <em>try again</em>.</p>
 : for $messages.keys() -> $key {
@@ -39,16 +39,5 @@
 </pre>
 <p><: $entry.created_at :> by <: $entry.nickname :></p>
 : }
-
-<div class="pagination">
-<ul>
-: if $offset > 0 {
-<li><a href="<: $c.req.uri_for('/',[offset => $offset-10 >= 0 ? $offset - 10 : 0]) :>">Prev</a></li>
-: }
-: if $has_next {
-<li><a href="<: $c.req.uri_for('/',[offset => $offset+10]) :>">Next</a></li>
-: }
-</ul>
-</div>
 
 : }
