@@ -66,9 +66,17 @@ sub add_entry {
 
 get '/' =>  sub {
     my ($self, $c)  = @_;
-    my $page = $c->req->param('page') || 1;
+    my $result = $c->req->validator([
+        'page' => {
+            default => 1,
+            rule => [['UINT', 'page must be unsigned int number']],
+        },
+    ]);
+    if ($result->has_error) {
+        return $c->render('index.tx', { error => 1, messages => $result->errors });
+    }
     my ($entries, $pager) = $self->db->search_with_pager('entry', {}, {
-        page     => $page,
+        page     => $result->valid('page'),
         rows     => $LIMIT,
         order_by => 'created_at DESC',
     });
